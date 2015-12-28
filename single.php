@@ -62,7 +62,6 @@
 							<?php comments_template( '/short-comments.php' ); ?>
 						</div>
 
-
 						<div class="related">
 							<p><?php _e('Related Posts: ','phaziz'); ?></p>
 							<?php
@@ -99,10 +98,8 @@
 						    ?>
 						</div>
 
-
-
 	        			<div class="previous_next">
- 							<?php previous_post_link('%link', '&lsaquo;&#160;&lsaquo;&#160;&lsaquo;'); ?>&#160;&#160;&#160;&bull;&#160;&#160;&#160;<?php next_post_link('%link', '&rsquo;&#160;&rsquo;&#160;&rsquo;'); ?>
+ 							<?php previous_post_link('%link', '&lt;&#160;&lt;&#160;&lt;'); ?>&#160;&#160;&#160;&bull;&#160;&#160;&#160;<?php next_post_link('%link', '&gt;&#160;&gt;&#160;&gt;'); ?>
 	        			</div>
 
 					</div>
