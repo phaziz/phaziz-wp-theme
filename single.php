@@ -1,3 +1,4 @@
+<!--single.php-->
 	<?php get_header(); ?>
 
 	<div id="main_content">
@@ -8,18 +9,15 @@
 				?>
 
 					<div class="the_whole_post" id="post-<?php the_ID(); ?>">
-
 						<?php
 
-							if(has_post_thumbnail())
-							{
-								echo '<div class="the_thumbnail">';
-								the_post_thumbnail('full');
-								echo '</div>';
+							if(has_post_thumbnail()){
+								?>
+									<div class="the_thumbnail"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_post_thumbnail('full'); ?></a></div>
+								<?php
 							}
 						
 						?>
-
 						<h3 class="the_title"><?php the_title(); ?></h3>
 		        		<div class="the_content">
 
@@ -42,8 +40,8 @@
 									'link_after'       => '',
 									'next_or_number'   => 'number',
 									'separator'        => ' ',
-									'nextpagelink'     => __( 'Next page >' ),
-									'previouspagelink' => __( '< Previous page' ),
+									'nextpagelink'     => __( 'Next page' ),
+									'previouspagelink' => __( 'Previous page' ),
 									'pagelink'         => '%',
 									'echo'             => 1
 								);
@@ -64,8 +62,47 @@
 							<?php comments_template( '/short-comments.php' ); ?>
 						</div>
 
+
+						<div class="related">
+							<p><?php _e('Related Posts: ','phaziz'); ?></p>
+							<?php
+							    $orig_post = $post;
+							    global $post;
+							    $tags = wp_get_post_tags($post->ID);
+							     
+							    if ($tags) {
+							    $tag_ids = array();
+							    foreach($tags as $individual_tag) $tag_ids[] = $individual_tag->term_id;
+							    $args=array(
+							    'tag__in' => $tag_ids,
+							    'post__not_in' => array($post->ID),
+							    'posts_per_page'=>10,
+							    'caller_get_posts'=>1
+							    );
+							     
+							    $my_query = new wp_query( $args );
+							 
+							    while( $my_query->have_posts() ) {
+							    $my_query->the_post();
+							    ?>
+							     
+							    <div class="relatedthumb">
+							        <a class="related" href="<? the_permalink()?>"><?php the_post_thumbnail(array(100,100)); ?><br />
+							        <?php the_title(); ?>
+							        </a>
+							    </div>
+							     
+							    <? }
+							    }
+							    $post = $orig_post;
+							    wp_reset_query();
+						    ?>
+						</div>
+
+
+
 	        			<div class="previous_next">
- 							<?php previous_post_link('%link', '<&#160;<&#160;<'); ?>&#160;&#160;&#160;&bull;&#160;&#160;&#160;<?php next_post_link('%link', '>&#160;>&#160;>'); ?>
+ 							<?php previous_post_link('%link', '&lsaquo;&#160;&lsaquo;&#160;&lsaquo;'); ?>&#160;&#160;&#160;&bull;&#160;&#160;&#160;<?php next_post_link('%link', '&rsquo;&#160;&rsquo;&#160;&rsquo;'); ?>
 	        			</div>
 
 					</div>
@@ -73,7 +110,7 @@
 		<?php endwhile; else : ?>
 
 			<div class="no">
- 				<p><?php _e('Sorry, no posts matched your criteria.'); ?></p>
+ 				<p><?php _e('Sorry, no posts matched your criteria.','phaziz'); ?></p>
 			</div>
 	
 	<?php endif; ?>

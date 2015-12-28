@@ -1,3 +1,4 @@
+<!--date.php-->
 	<?php get_header(); ?>
 
 	<div id="main_content">
@@ -10,14 +11,13 @@
 					printf( __( 'Archivo Explosivo Tag: %s', 'phaziz' ), '<span>' . get_the_date() . '</span>' );
 
 				elseif ( is_month() ) :
-					printf( __( 'Archivo Explosivo Monat: %s', 'phaziz' ), '<span>' . get_the_date( _x( 'F Y', 'monthly archives date format', 'tonal' ) ) . '</span>' );
+					printf( __( 'Archivo Explosivo Monat: %s', 'phaziz' ), '<span>' . get_the_date( __( 'F Y', 'monthly archives date format', 'phaziz' ) ) . '</span>' );
 
 				elseif ( is_year() ) :
-					printf( __( 'Archivo Explosivo Jahr: %s', 'phaziz' ), '<span>' . get_the_date( _x( 'Y', 'yearly archives date format', 'tonal' ) ) . '</span>' );
+					printf( __( 'Archivo Explosivo Jahr: %s', 'phaziz' ), '<span>' . get_the_date( __( 'Y', 'yearly archives date format', 'phaziz' ) ) . '</span>' );
 
 				else :
-					_e( 'Archivo Explosivo', 'phaziz' );
-
+					_e('Archivo Explosivo', 'phaziz');
 				endif;
 			?>
 
@@ -30,19 +30,16 @@
 				?>
 
 					<div class="the_whole_post" id="post-<?php the_ID(); ?>">
-
 						<?php
 
-							if(has_post_thumbnail())
-							{
-								echo '<div class="the_thumbnail">';
-								the_post_thumbnail('full');
-								echo '</div>';
+							if(has_post_thumbnail()){
+								?>
+									<div class="the_thumbnail"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_post_thumbnail('full'); ?></a></div>
+								<?php
 							}
 						
 						?>
-
-						<h3 class="the_title"><a href="<?php the_permalink(); ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
+						<h3 class="the_title"><a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php _e('Permanent Link to ','phaziz') . the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
 		        		<div class="the_content">
 
 			        		<?php
@@ -67,7 +64,7 @@
 		<?php endwhile; else : ?>
 
 			<div class="no">
- 				<p><?php _e('Sorry, no posts matched your criteria.'); ?></p>
+ 				<p><?php _e('Sorry, no posts matched your criteria.','phaziz'); ?></p>
 			</div>
 	
 		<?php endif; ?>
@@ -75,20 +72,17 @@
 		<div class="the_pagination">
 	
 			<?php
-		
-				global $wp_query;
-			
-				$big = 999999999; // need an unlikely integer
-				$translated = __( ' ', 'phaziz' ); // Supply translatable string
-				
+
+				global $wp_query;			
+				$big = 999999999;
 				echo paginate_links( array(
 					'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
 					'format' => '?paged=%#%',
 					'current' => max( 1, get_query_var('paged') ),
 					'total' => $wp_query->max_num_pages,
-				        'before_page_number' => '<span class="screen-reader-text">'.$translated.' </span>'
+				        'before_page_number' => ''
 				) );
-		
+
 			?>
 	
 		</div><!--EOF DIV ID THE_PAGINATION-->

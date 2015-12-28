@@ -1,3 +1,4 @@
+<!--functions.php-->
 <?php
 
 	add_theme_support( 'automatic-feed-links' );
@@ -7,12 +8,12 @@
 	add_theme_support( 'title-tag' );
 
 	function new_excerpt_more( $more ) {
-		return ' <a class="read-more" href="'. get_permalink( get_the_ID() ) . '">' . __('Read More', 'your-text-domain') . '</a>';
+		return ' <a class="read-more" href="'. get_permalink( get_the_ID() ) . '">' . __('Read More', 'phaziz') . '</a>';
 	}
 	add_filter( 'excerpt_more', 'new_excerpt_more' );
 
-	add_action('wp_enqueue_scripts', 'theme_enqueue_scripts');
-	function theme_enqueue_scripts() {
+	add_action('wp_enqueue_scripts', 'phaziz_enqueue_scripts');
+	function phaziz_enqueue_scripts() {
 	  wp_enqueue_style('theme-style', get_template_directory_uri() . '/style.css', array());
 	  wp_enqueue_style('roboto-mono', 'https://fonts.googleapis.com/css?family=Roboto+Mono:300', array());
 	  wp_enqueue_script('main', get_template_directory_uri() . '/main.js');
@@ -118,8 +119,8 @@
 	function regNav() {
 	  register_nav_menus(
 	    array(
-	      'top' => __( 'Oben' ),
-	      'bottom' => __( 'Unten' )
+	      'top' => __( 'Top' ),
+	      'bottom' => __( 'Footer' )
 	    )
 	  );
 	}
@@ -145,14 +146,12 @@
 	    $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
 	    $class_names = $value = ''; 
 	    $classes = empty( $item->classes ) ? array() : (array) $item->classes;
-	    
-	    /* Add active class */
+
 	    if(in_array('current-menu-item', $classes)) {
 	      $classes[] = 'active';
 	      unset($classes['current-menu-item']);
 	    }
-	    
-	    /* Check for children */
+
 	    $children = get_posts(array('post_type' => 'nav_menu_item', 'nopaging' => true, 'numberposts' => 1, 'meta_key' => '_menu_item_menu_item_parent', 'meta_value' => $item->ID));
 	    if (!empty($children)) {
 	      $classes[] = 'has-sub';
@@ -183,4 +182,9 @@
 	  function end_el( &$output, $item, $depth = 0, $args = array() ) {
 	    $output .= "</li>\n";
 	  }
+	}
+
+	add_action('after_setup_theme', 'phaziz_language_setup');
+	function phaziz_language_setup(){
+    	load_theme_textdomain('phaziz', get_template_directory() . '/languages');
 	}

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--header.php-->
 <html <?php language_attributes(); ?>>
 	<head>
 		<meta charset="<?php bloginfo( 'charset' ); ?>">

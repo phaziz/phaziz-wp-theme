@@ -1,3 +1,4 @@
+<!--footer.php-->
 <div id="footer_widgets">
 <div class="block-group">
 <div class="b1 block"><?php if (!function_exists('dynamic_sidebar') || !dynamic_sidebar('Footer1')) : endif; ?></div>
