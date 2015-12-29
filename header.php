@@ -24,11 +24,9 @@
 
 			if(has_nav_menu('top')){
 			?>
-
 				<div id="top" role="navigation">
 					<?php wp_nav_menu( array( 'theme_location' => 'top','container_id' => 'cssmenu-top','walker' => new CSS_Menu_Maker_Walker() ) ); ?>
 				</div>
-
 			<?php
 			} 
 
