@@ -265,7 +265,7 @@
 	$float = is_rtl() ? 'right' : 'left';
 	$selector = "gallery-{$instance}";
 	$output = apply_filters('gallery_style', "<div id='$selector' class='gallery galleryid-{$id}'>");
-	$output = "<div id=\"phaziz_gallery\">\n";
+	$output = "<div class=\"phaziz_gallery\">\n";
 	$i = 0;
 	foreach ( $attachments as $id => $attachment ) {
 	    $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
