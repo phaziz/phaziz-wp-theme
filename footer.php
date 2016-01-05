@@ -25,10 +25,8 @@
 		<p>&copy; <?php echo date('Y'); ?> <?php echo esc_attr(get_bloginfo('name')); ?> | Theme "phaziz" by <a target="_blank" href="http://phaziz.com">Christian Becher | phaziz.com</a></p>
 	</footer>
 	<script>
-		$(".phaziz_gallery").justifiedGallery({'rowHeight':250,'maxRowHeight':350,'rel':'phaziz_lightbox','lastRow':'justify'}).on('jg.complete',function(){$('.phaziz_gallery a').swipebox();});
-		$('.phaziz_gallery').each(function (i,el){$(el).justifiedGallery({rel: 'phaziz-item-' + i})});
+		$(function(){$("#navigation-toggle").on("click",function(){"none"==$("#cssmenu-top").css("display")?($("#menu-oben,#cssmenu-top").css("display","block"),$("#menu-oben,#cssmenu-top").css("visibility","visible")):($("#menu-oben,#cssmenu-top").css("display","none"),$("#menu-oben,#cssmenu-top").css("visibility","hidden"))}),$(".phaziz_gallery").justifiedGallery({rowHeight:250,maxRowHeight:350,rel:"phaziz_lightbox",lastRow:"justify"}).on("jg.complete",function(){$(".phaziz_gallery a").swipebox()}),$(".phaziz_gallery").each(function(i,e){$(e).justifiedGallery({rel:"phaziz-item-"+i})});});
 	</script>
 	<?php wp_footer(); ?>
-
 </body>
 </html>

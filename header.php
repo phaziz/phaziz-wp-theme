@@ -12,11 +12,7 @@
 			$link = get_settings( 'link' );
 			$linkhover = get_settings( 'linkhover' );
 		?>
-		<style>
-			body {background: <?php echo $background; ?>;}
-			a:link, a:active, a:visited{color:<?php echo $link; ?>;}
-			a:hover{color:<?php echo $linkhover; ?>;}
-		</style>
+		<style>body{background:<?php echo $background; ?>}a:link,a:active,a:visited{color:<?php echo $link; ?>}a:hover{color:<?php echo $linkhover; ?>}</style>
 	</head>
 	<body <?php body_class(); ?>>
 
@@ -24,6 +20,8 @@
 
 			if(has_nav_menu('top')){
 			?>
+				<div id="navigation-toggle"><a href="#">NAVIGATION</a></div>
+			
 				<div id="top" role="navigation">
 					<?php wp_nav_menu( array( 'theme_location' => 'top','container_id' => 'cssmenu-top','walker' => new CSS_Menu_Maker_Walker() ) ); ?>
 				</div>
@@ -51,4 +49,4 @@
 				?>
 			<?php endif; ?>
 
-		</div><!--DIV ID EOF HEADER-->
+		</div>
