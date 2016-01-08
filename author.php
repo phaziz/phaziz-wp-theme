@@ -26,7 +26,7 @@
 
 							if(has_post_thumbnail()){
 								?>
-									<div class="the_thumbnail"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_post_thumbnail('full'); ?></a></div>
+									<div class="the_thumbnail"><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_post_thumbnail('full',array('class'=>'lazyload')); ?></a></div>
 								<?php
 							}
 						

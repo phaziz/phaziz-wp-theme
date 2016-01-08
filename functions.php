@@ -268,15 +268,15 @@
 	$output = "<div class=\"phaziz_gallery\">\n";
 	$i = 0;
 	foreach ( $attachments as $id => $attachment ) {
-	    $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size, false, false) : wp_get_attachment_link($id, $size, true, false);
+	    $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size . ' lazyload', false, false) : wp_get_attachment_link($id, $size . ' lazyload', true, false);
 	    $output .= "$link";
 	    if ( $captiontag && trim($attachment->post_excerpt) ) {
 	        $output .= "<{$captiontag} class='gallery-caption'>" . wptexturize($attachment->post_excerpt) . "</{$captiontag}>";
 	    }
 
 	    if ( $columns > 0 && ++$i % $columns == 0 )
-	        $output .= '<br style="clear: both">';
+	        $output .= '<br style="clear:both">';
 	}
-	$output .= "<br style='clear: both;'></div>\n";
+	$output .= "<br style='clear:both'></div>\n";
 	return $output;
 	}

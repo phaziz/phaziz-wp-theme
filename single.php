@@ -11,7 +11,7 @@
 	
 							if(has_post_thumbnail()){
 								?>
-									<div class="the_thumbnail"><?php the_post_thumbnail('full'); ?></div>
+									<div class="the_thumbnail"><?php the_post_thumbnail('full',array('class'=>'lazyload')); ?></div>
 								<?php
 							} else {}
 						
