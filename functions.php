@@ -10,17 +10,39 @@
 	add_theme_support( 'post-excerpts' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );
 	add_theme_support( 'title-tag' );
-	
+
 	function phaziz_add_id_column( $columns ) {
 	   $columns['phaziz_id'] = 'ID';
 	   return $columns;
 	}
-	
+
 	function phaziz_id_column_content( $column, $id ) {
 	  if( 'phaziz_id' == $column ) {
 	    echo $id;
 	  }
 	}
+
+	function phaziz_commentdofollow($text) {
+	    return str_replace('" rel="nofollow">', '">', $text);
+	}
+
+	add_filter('comment_text', 'phaziz_commentdofollow');
+	remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
+
+	function phaziz_remove_nofollow($string){    
+	    return str_ireplace(' nofollow', '', $string);
+	}
+
+	add_filter('get_comment_author_link', 'phaziz_remove_nofollow');
+
+	function phaziz_no_self_ping( &$links ) {
+	  $home = get_option( 'home' );
+	  foreach ( $links as $l => $link )
+	  if ( 0 === strpos( $link, $home ) )
+	  unset($links[$l]);
+	}
+
+	add_action( 'pre_ping', 'phaziz_no_self_ping' );
 
 	function new_excerpt_more( $more ) {
 		return ' <a class="read-more" href="'. get_permalink( get_the_ID() ) . '">' . __('Read More', 'phaziz') . '</a>';
@@ -34,7 +56,7 @@
 	wp_deregister_script( 'jquery' );
 	  wp_enqueue_style('roboto-mono', 'https://fonts.googleapis.com/css?family=Roboto+Mono:300', array());
 	  wp_enqueue_style('theme-style', get_template_directory_uri() . '/style.css', array());
-	  wp_enqueue_script( 'jquery','https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js');
+	  wp_enqueue_script( 'jquery','https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js');
 	  wp_enqueue_style('justified_gallery_style', get_template_directory_uri() . '/ext/justifiedGallery.min.css', array());
 	  wp_enqueue_style('swipebox_style', get_template_directory_uri() . '/ext/swipebox/css/swipebox.min.css', array());
 	  wp_enqueue_script('justified_gallery_script', get_template_directory_uri() . '/ext/jquery.justifiedGallery.min.js');
