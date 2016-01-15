@@ -14,9 +14,9 @@
 				elseif ( is_day() ) :
 					printf( __( 'Tag: %s', 'phaziz' ), '<span>' . get_the_date() . '</span>' );
 				elseif ( is_month() ) :
-					printf( __( 'Month: %s', 'phaziz' ), '<span>' . get_the_date( _x( 'F Y', 'monthly archives date format', 'tonal' ) ) . '</span>' );
+					printf( __( 'Month: %s', 'phaziz' ), '<span>' . get_the_date(__('F - Y','phaziz')) . '</span>' );
 				elseif ( is_year() ) :
-					printf( __( 'Year: %s', 'phaziz' ), '<span>' . get_the_date( _x( 'Y', 'yearly archives date format', 'tonal' ) ) . '</span>' );
+					printf( __( 'Year: %s', 'phaziz' ), '<span>' . get_the_date(__('Y','phaziz')) . '</span>' );
 				else :
 					_e( 'Archives', 'phaziz' );
 
@@ -29,7 +29,7 @@
 
 			if ( have_posts() ) : while ( have_posts() ) : the_post();
 				?>
-					<div class="the_whole_post" id="post-<?php the_ID(); ?>">
+					<div <?php post_class( 'the_whole_post' ); ?> id="post-<?php the_ID(); ?>">
 						<?php
 
 							if(has_post_thumbnail()){
@@ -55,6 +55,7 @@
 	        			</div>
 
 		        		<div class="the_meta">
+		        			<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php echo __( 'Permalink', 'phaziz' ); ?></a><br>
 		        			<?php the_time( get_option( 'date_format' ) ); ?> <?php the_author_posts_link(); ?><br>
 		        			<?php the_category( ' &bull; ' ); ?><br />
 		        			<?php the_tags( '', ' &bull; ', '' ); ?>

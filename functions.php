@@ -1,5 +1,7 @@
 <?php
 	
+	if ( ! isset( $content_width ) ) $content_width = 800;
+	
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 	remove_action( 'wp_print_styles', 'print_emoji_styles' );
 	define('CONCATENATE_SCRIPTS', false);
@@ -10,6 +12,10 @@
 	add_theme_support( 'post-excerpts' );
 	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );
 	add_theme_support( 'title-tag' );
+
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
 
 	function phaziz_add_id_column( $columns ) {
 	   $columns['phaziz_id'] = 'ID';
@@ -36,7 +42,7 @@
 	add_filter('get_comment_author_link', 'phaziz_remove_nofollow');
 
 	function phaziz_no_self_ping( &$links ) {
-	  $home = get_option( 'home' );
+	  $home = home_url();
 	  foreach ( $links as $l => $link )
 	  if ( 0 === strpos( $link, $home ) )
 	  unset($links[$l]);
@@ -70,7 +76,15 @@
 		    'priority'    => 30,
 		    'description' => 'Upload a logo to replace the default site name and description in the header',
 		) );
-		$wp_customize->add_setting( 'phaziz_logo' );
+ 		$wp_customize->add_setting(
+			'phaziz_logo',
+			array(
+				'default' => '',
+				'sanitize_callback' => 'esc_url_raw',
+				'transport'   => 'postMessage',
+
+			)
+		);
 		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'phaziz_logo', array(
 		    'label'    => __( 'Logo', 'phaziz' ),
 		    'section'  => 'phaziz_logo_section',
@@ -79,6 +93,13 @@
 	}
 
 	add_action( 'customize_register', 'phaziz_theme_customizer' );
+
+	function phaziz_sanitize_hex_color( $color ) {
+	    if ( '' === $color )
+	        return '';
+	    if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) )
+	        return $color;
+	}
 
 	function phaziz_customize_register( $wp_customize ) {
 		$colors = array();
@@ -102,8 +123,8 @@
 		    $color['slug'], array(
 		      'default' => $color['default'],
 		      'type' => 'option', 
-		      'capability' => 
-		      'edit_theme_options'
+		      'capability' => 'edit_theme_options',
+		      'sanitize_callback' => 'phaziz_sanitize_hex_color'
 		    )
 		  );
 		  $wp_customize->add_control(
@@ -157,8 +178,8 @@
 	function regNav() {
 	  register_nav_menus(
 	    array(
-	      'top' => __( 'Top' ),
-	      'bottom' => __( 'Footer' )
+	      'top' => __( 'Top', 'phaziz' ),
+	      'bottom' => __( 'Footer', 'phaziz' )
 	    )
 	  );
 	}
@@ -301,4 +322,17 @@
 	}
 	$output .= "<br style='clear:both'></div>\n";
 	return $output;
+	}
+
+	add_action( 'widgets_init', 'phaziz_widgets_init' );
+	function phaziz_widgets_init() {
+	    register_sidebar( array(
+	        'name' => __( 'Main Sidebar', 'phaziz' ),
+	        'id' => 'sidebar-1',
+	        'description' => __( 'Widgets in this area will be shown on all posts and pages.', 'phaziz' ),
+	        'before_widget' => '<li id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</li>',
+		'before_title'  => '<h2 class="widgettitle">',
+		'after_title'   => '</h2>',
+	    ) );
 	}

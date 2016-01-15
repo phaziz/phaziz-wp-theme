@@ -8,7 +8,7 @@
 		<?php 
 			if ( have_posts() ) : while ( have_posts() ) : the_post();
 				?>
-					<div class="the_whole_post" id="post-<?php the_ID(); ?>">
+					<div <?php post_class( 'the_whole_post' ); ?> id="post-<?php the_ID(); ?>"  <?php post_class(); ?>>
 						<?php
 							if(has_post_thumbnail()){
 								?>
@@ -27,6 +27,7 @@
 			        		?>
 	        			</div>
 		        		<div class="the_meta">
+		        			<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php echo __( 'Permalink', 'phaziz' ); ?></a><br>
 		        			<?php the_time( get_option( 'date_format' ) ); ?> <?php the_author_posts_link(); ?><br>
 		        			<?php the_category( ' &bull; ' ); ?><br />
 		        			<?php the_tags( '', ' &bull; ', '' ); ?>

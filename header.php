@@ -8,9 +8,9 @@
 		<link rel="shortcut icon" href="<?php echo esc_url(home_url()); ?>/favicon.png" type="image/x-icon">
 		<?php wp_head(); ?>
 		<?php
-			$background = get_settings( 'background' );
-			$link = get_settings( 'link' );
-			$linkhover = get_settings( 'linkhover' );
+			$background = get_option( 'background' );
+			$link = get_option( 'link' );
+			$linkhover = get_option( 'linkhover' );
 		?>
 		<style>body{background:<?php echo $background; ?>}a:link,a:active,a:visited{color:<?php echo $link; ?>}a:hover{color:<?php echo $linkhover; ?>}</style>
 	</head>
@@ -36,7 +36,7 @@
 		    	<h1><a href="<?php echo esc_url(home_url()); ?>"><img src="<?php echo esc_url( get_theme_mod( 'phaziz_logo' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" height="268" width="268"></a></h1>
 			<?php else : ?>
 		        <h1><a href='<?php echo esc_url( home_url( '/' ) ); ?>' title='<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>' rel='home'><?php bloginfo( 'name' ); ?></a></h1>
-				<?php $DESCRIPTION = attribute_escape(get_bloginfo('description')); ?>
+				<?php $DESCRIPTION = esc_attr(get_bloginfo('description')); ?>
 
 				<?php
 

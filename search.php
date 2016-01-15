@@ -6,10 +6,10 @@
 
 			<form role="search" method="get" class="search-form" action="<?php echo home_url( '/' ); ?>">
 				<label>
-					<span class="screen-reader-text"><?php echo _x( 'Search for:', 'label' ) ?></span>
-					<input type="search" class="search-field" placeholder="<?php echo esc_attr_x( 'Search …', 'placeholder' ) ?>" value="<?php echo get_search_query() ?>" name="s" title="<?php echo esc_attr_x( 'Search for:', 'label' ) ?>" />
+					<span class="screen-reader-text"><?php echo _x( 'Search for:', 'label', 'phaziz' ) ?></span>
+					<input type="search" class="search-field" placeholder="<?php echo esc_attr_x( 'Search', 'placeholder', 'phaziz' ) ?>" value="<?php echo get_search_query() ?>" name="s" title="<?php echo esc_attr_x( 'Search for:', 'label', 'phaziz' ) ?>" />
 				</label>
-				<input type="submit" class="search-submit" value="<?php echo esc_attr_x( 'Search', 'submit button' ) ?>" />
+				<input type="submit" class="search-submit" value="<?php echo esc_attr_x( 'Search', 'submit button', 'phaziz' ) ?>" />
 			</form>
 
 		</div>
@@ -20,7 +20,7 @@
 
 				?>
 
-					<div class="the_whole_post" id="post-<?php the_ID(); ?>">
+					<div <?php post_class( 'the_whole_post' ); ?> id="post-<?php the_ID(); ?>">
 						<?php
 
 							if(has_post_thumbnail()){
@@ -42,6 +42,7 @@
 	        			</div>
 
 		        		<div class="the_meta">
+		        			<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php echo __( 'Permalink', 'phaziz' ); ?></a><br>
 		        			<?php the_time( get_option( 'date_format' ) ); ?> <?php the_author_posts_link(); ?><br>
 		        			<?php the_category( ' &bull; ' ); ?><br />
 		        			<?php the_tags( '', ' &bull; ', '' ); ?>
