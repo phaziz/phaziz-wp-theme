@@ -1,8 +1,6 @@
 # phaziz-wp-theme
 phaziz Wordpress Theme
 
-Demo: http://blog.phaziz.com
-
 Copyright (c) 2015 Christian Becher - phaziz.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
