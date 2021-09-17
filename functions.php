@@ -1,338 +1,457 @@
 <?php
-	
-	if ( ! isset( $content_width ) ) $content_width = 800;
-	
-	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-	remove_action( 'wp_print_styles', 'print_emoji_styles' );
-	define('CONCATENATE_SCRIPTS', false);
-	add_filter( 'manage_posts_columns', 'phaziz_add_id_column', 5 );
-	add_action( 'manage_posts_custom_column', 'phaziz_id_column_content', 5, 2 );
-	add_theme_support( 'automatic-feed-links' );
-	add_theme_support( 'post-thumbnails' );
-	add_theme_support( 'post-excerpts' );
-	add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );
-	add_theme_support( 'title-tag' );
 
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
+if (!isset($content_width)) $content_width = 800;
 
-	function phaziz_add_id_column( $columns ) {
-	   $columns['phaziz_id'] = 'ID';
-	   return $columns;
-	}
+remove_action('wp_head', 'print_emoji_detection_script', 7);
+remove_action('wp_print_styles', 'print_emoji_styles');
 
-	function phaziz_id_column_content( $column, $id ) {
-	  if( 'phaziz_id' == $column ) {
-	    echo $id;
-	  }
-	}
+define('CONCATENATE_SCRIPTS', false);
 
-	function phaziz_commentdofollow($text) {
-	    return str_replace('" rel="nofollow">', '">', $text);
-	}
+add_filter('manage_posts_columns', 'phaziz_add_id_column', 5);
 
-	add_filter('comment_text', 'phaziz_commentdofollow');
-	remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
+add_action('manage_posts_custom_column', 'phaziz_id_column_content', 5, 2);
 
-	function phaziz_remove_nofollow($string){    
-	    return str_ireplace(' nofollow', '', $string);
-	}
+add_theme_support('automatic-feed-links');
+add_theme_support('post-thumbnails');
+add_theme_support('post-excerpts');
+add_theme_support('html5', array(
+    'comment-list',
+    'comment-form',
+    'search-form',
+    'gallery',
+    'caption'
+));
 
-	add_filter('get_comment_author_link', 'phaziz_remove_nofollow');
+add_theme_support('title-tag');
 
-	function phaziz_no_self_ping( &$links ) {
-	  $home = home_url();
-	  foreach ( $links as $l => $link )
-	  if ( 0 === strpos( $link, $home ) )
-	  unset($links[$l]);
-	}
+if (is_singular() && comments_open() && get_option('thread_comments'))
+{
+    wp_enqueue_script('comment-reply');
+}
 
-	add_action( 'pre_ping', 'phaziz_no_self_ping' );
+function phaziz_add_id_column($columns)
+{
+    $columns['phaziz_id'] = 'ID';
 
-	function new_excerpt_more( $more ) {
-		return ' <a class="read-more" href="'. get_permalink( get_the_ID() ) . '">' . __('Read More', 'phaziz') . '</a>';
-	}
+    return $columns;
+}
 
-	add_filter( 'excerpt_more', 'new_excerpt_more' );
+function phaziz_id_column_content($column, $id)
+{
+    if ('phaziz_id' == $column)
+    {
+        echo $id;
+    }
+}
 
-	add_action('wp_enqueue_scripts', 'phaziz_enqueue_scripts');
+function phaziz_commentdofollow($text)
+{
+    return str_replace('" rel="nofollow">', '">', $text);
+}
 
-	function phaziz_enqueue_scripts() {
-	wp_deregister_script( 'jquery' );
-	  wp_enqueue_style('roboto-mono', 'https://fonts.googleapis.com/css?family=Roboto+Mono:300', array());
-	  wp_enqueue_style('theme-style', get_template_directory_uri() . '/style.css', array());
-	  wp_enqueue_script( 'jquery','https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js');
-	  wp_enqueue_style('justified_gallery_style', get_template_directory_uri() . '/ext/justifiedGallery.min.css', array());
-	  wp_enqueue_style('swipebox_style', get_template_directory_uri() . '/ext/swipebox/css/swipebox.min.css', array());
-	  wp_enqueue_script('justified_gallery_script', get_template_directory_uri() . '/ext/jquery.justifiedGallery.min.js');
-	  wp_enqueue_script('swipebox_script', get_template_directory_uri() . '/ext/swipebox/js/jquery.swipebox.min.js');
-	  wp_enqueue_script('main-script', get_template_directory_uri() . '/js/main.js');
-	}
+add_filter('comment_text', 'phaziz_commentdofollow');
 
-	function phaziz_theme_customizer( $wp_customize ) {
-		$wp_customize->add_section( 'phaziz_logo_section' , array(
-		    'title'       => __( 'Logo', 'phaziz' ),
-		    'priority'    => 30,
-		    'description' => 'Upload a logo to replace the default site name and description in the header',
-		) );
- 		$wp_customize->add_setting(
-			'phaziz_logo',
-			array(
-				'default' => '',
-				'sanitize_callback' => 'esc_url_raw',
-				'transport'   => 'postMessage',
+remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 
-			)
-		);
-		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'phaziz_logo', array(
-		    'label'    => __( 'Logo', 'phaziz' ),
-		    'section'  => 'phaziz_logo_section',
-		    'settings' => 'phaziz_logo',
-		) ) );
-	}
+function phaziz_remove_nofollow($string)
+{
+    return str_ireplace(' nofollow', '', $string);
+}
 
-	add_action( 'customize_register', 'phaziz_theme_customizer' );
+add_filter('get_comment_author_link', 'phaziz_remove_nofollow');
 
-	function phaziz_sanitize_hex_color( $color ) {
-	    if ( '' === $color )
-	        return '';
-	    if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) )
-	        return $color;
-	}
+function phaziz_no_self_ping(&$links)
+{
+    $home = home_url();
 
-	function phaziz_customize_register( $wp_customize ) {
-		$colors = array();
-		$colors[0] = array(
-		  'slug'=>'background', 
-		  'default' => '#fff',
-		  'label' => __('Background Color', 'phaziz')
-		);
-		$colors[1] = array(
-		  'slug'=>'link', 
-		  'default' => '#0000ff',
-		  'label' => __('Link Color', 'phaziz')
-		);
-		$colors[2] = array(
-		  'slug'=>'linkhover', 
-		  'default' => '#ff0066',
-		  'label' => __('Link Hover Color', 'phaziz')
-		);	
-		foreach( $colors as $color ) {
-		  $wp_customize->add_setting(
-		    $color['slug'], array(
-		      'default' => $color['default'],
-		      'type' => 'option', 
-		      'capability' => 'edit_theme_options',
-		      'sanitize_callback' => 'phaziz_sanitize_hex_color'
-		    )
-		  );
-		  $wp_customize->add_control(
-		    new WP_Customize_Color_Control(
-		      $wp_customize,
-		      $color['slug'], 
-		      array('label' => $color['label'], 
-		      'section' => 'colors',
-		      'settings' => $color['slug'])
-		    )
-		  );
-		}
-	}
-	add_action( 'customize_register', 'phaziz_customize_register' );
-	
-	if (function_exists('register_sidebar')) {
-		register_sidebar(array(
-			'name'=> 'Footer1',
-			'id' => 'footer1',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h6 >',
-			'after_title' => '</h6>',
-		));
-		register_sidebar(array(
-			'name'=> 'Footer2',
-			'id' => 'footer2',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h6 >',
-			'after_title' => '</h6>',
-		));
-		register_sidebar(array(
-			'name'=> 'Footer3',
-			'id' => 'footer3',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h6 >',
-			'after_title' => '</h6>',
-		));
-		register_sidebar(array(
-			'name'=> 'Footer4',
-			'id' => 'footer4',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h6 >',
-			'after_title' => '</h6>',
-		));
-	}
+    foreach ($links as $l => $link) 
+        if (0 === strpos($link, $home)) 
+            unset($links[$l]);
+}
 
-	function regNav() {
-	  register_nav_menus(
-	    array(
-	      'top' => __( 'Top', 'phaziz' ),
-	      'bottom' => __( 'Footer', 'phaziz' )
-	    )
-	  );
-	}
-	add_action( 'init', 'regNav' );
-	
-	class CSS_Menu_Maker_Walker extends Walker {
-	
-	  var $db_fields = array( 'parent' => 'menu_item_parent', 'id' => 'db_id' );
-	  
-	  function start_lvl( &$output, $depth = 0, $args = array() ) {
-	    $indent = str_repeat("\t", $depth);
-	    $output .= "\n$indent<ul>\n";
-	  }
-	  
-	  function end_lvl( &$output, $depth = 0, $args = array() ) {
-	    $indent = str_repeat("\t", $depth);
-	    $output .= "$indent</ul>\n";
-	  }
-	  
-	  function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-	  
-	    global $wp_query;
-	    $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-	    $class_names = $value = ''; 
-	    $classes = empty( $item->classes ) ? array() : (array) $item->classes;
+add_action('pre_ping', 'phaziz_no_self_ping');
 
-	    if(in_array('current-menu-item', $classes)) {
-	      $classes[] = 'active';
-	      unset($classes['current-menu-item']);
-	    }
+function new_excerpt_more($more)
+{
+    return ' <a class="read-more" href="' . get_permalink(get_the_ID()) . '">' . __('Read More', 'phaziz') . '</a>';
+}
 
-	    $children = get_posts(array('post_type' => 'nav_menu_item', 'nopaging' => true, 'numberposts' => 1, 'meta_key' => '_menu_item_menu_item_parent', 'meta_value' => $item->ID));
-	    if (!empty($children)) {
-	      $classes[] = 'has-sub';
-	    }
-	    
-	    $class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
-	    $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
-	    
-	    $id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args );
-	    $id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
-	    
-	    $output .= $indent . '<li' . $id . $value . $class_names .'>';
-	    
-	    $attributes  = ! empty( $item->attr_title ) ? ' title="'  . esc_attr( $item->attr_title ) .'"' : '';
-	    $attributes .= ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
-	    $attributes .= ! empty( $item->xfn )        ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
-	    $attributes .= ! empty( $item->url )        ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
-	    
-	    $item_output = $args->before;
-	    $item_output .= '<a'. $attributes .'><span>';
-	    $item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
-	    $item_output .= '</span></a>';
-	    $item_output .= $args->after;
-	    
-	    $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
-	  }
-	  
-	  function end_el( &$output, $item, $depth = 0, $args = array() ) {
-	    $output .= "</li>\n";
-	  }
-	}
+add_filter('excerpt_more', 'new_excerpt_more');
 
-	add_action('after_setup_theme', 'phaziz_language_setup');
-	function phaziz_language_setup(){
-    	load_theme_textdomain('phaziz', get_template_directory() . '/languages');
-	}
+add_action('wp_enqueue_scripts', 'phaziz_enqueue_scripts');
 
-	add_filter( 'post_gallery', 'my_post_gallery', 10, 2 );
-	function my_post_gallery( $output, $attr) {
-	global $post, $wp_locale;
-	
-	static $instance = 0;
-	$instance++;
+function phaziz_enqueue_scripts()
+{
+    wp_deregister_script('jquery');
+    wp_enqueue_style('roboto-mono', 'https://fonts.googleapis.com/css?family=Roboto+Mono:300', array());
+    wp_enqueue_style('theme-style', get_template_directory_uri() . '/style.css', array());
+    wp_enqueue_script('jquery', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js');
+    wp_enqueue_style('justified_gallery_style', get_template_directory_uri() . '/ext/justifiedGallery.min.css', array());
+    wp_enqueue_style('swipebox_style', get_template_directory_uri() . '/ext/swipebox/css/swipebox.min.css', array());
+    wp_enqueue_script('justified_gallery_script', get_template_directory_uri() . '/ext/jquery.justifiedGallery.min.js');
+    wp_enqueue_script('swipebox_script', get_template_directory_uri() . '/ext/swipebox/js/jquery.swipebox.min.js');
+    wp_enqueue_script('main-script', get_template_directory_uri() . '/js/main.js');
+}
 
-	if ( isset( $attr['orderby'] ) ) {
-	    $attr['orderby'] = sanitize_sql_orderby( $attr['orderby'] );
-	    if ( !$attr['orderby'] )
-	        unset( $attr['orderby'] );
-	}
+function phaziz_theme_customizer($wp_customize)
+{
+    $wp_customize->add_section('phaziz_logo_section', array(
+        'title' => __('Logo', 'phaziz') ,
+        'priority' => 30,
+        'description' => 'Upload a logo to replace the default site name and description in the header',
+    ));
 
-	extract(shortcode_atts(array(
-	    'order'      => 'ASC',
-	    'orderby'    => 'menu_order ID',
-	    'id'         => $post->ID,
-	    'itemtag'    => '',
-	    'icontag'    => '',
-	    'captiontag' => 'dd',
-	    'columns'    => 3,
-	    'size'       => 'medium',
-	    'include'    => '',
-	    'exclude'    => ''
-	), $attr));
+    $wp_customize->add_setting('phaziz_logo', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport' => 'postMessage',
 
-	$id = intval($id);
-	if ( 'RAND' == $order )
-	    $orderby = 'none';
-	if ( !empty($include) ) {
-	    $include = preg_replace( '/[^0-9,]+/', '', $include );
-	    $_attachments = get_posts( array('include' => $include, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby) );
-	    $attachments = array();
-	    foreach ( $_attachments as $key => $val ) {
-	        $attachments[$val->ID] = $_attachments[$key];
-	    }
-	} elseif ( !empty($exclude) ) {
-	    $exclude = preg_replace( '/[^0-9,]+/', '', $exclude );
-	    $attachments = get_children( array('post_parent' => $id, 'exclude' => $exclude, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby) );
-	} else {
-	    $attachments = get_children( array('post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $order, 'orderby' => $orderby) );
-	}
-	
-	if ( empty($attachments) )
-	    return '';
-	
-	if ( is_feed() ) {
-	    $output = "\n";
-	    foreach ( $attachments as $att_id => $attachment )
-	        $output .= wp_get_attachment_link($att_id, $size, true) . "\n";
-	    return $output;
-	}
+    ));
 
-	$itemtag = tag_escape($itemtag);
-	$captiontag = tag_escape($captiontag);
-	$columns = intval($columns);
-	$itemwidth = $columns > 0 ? floor(100/$columns) : 100;
-	$float = is_rtl() ? 'right' : 'left';
-	$selector = "gallery-{$instance}";
-	$output = apply_filters('gallery_style', "<div id='$selector' class='gallery galleryid-{$id}'>");
-	$output = "<div class=\"phaziz_gallery\">\n";
-	$i = 0;
-	foreach ( $attachments as $id => $attachment ) {
-	    $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size . ' lazyload', false, false) : wp_get_attachment_link($id, $size . ' lazyload', true, false);
-	    $output .= "$link";
-	    if ( $captiontag && trim($attachment->post_excerpt) ) {
-	        $output .= "<{$captiontag} class='gallery-caption'>" . wptexturize($attachment->post_excerpt) . "</{$captiontag}>";
-	    }
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'phaziz_logo', array(
+        'label' => __('Logo', 'phaziz') ,
+        'section' => 'phaziz_logo_section',
+        'settings' => 'phaziz_logo',
+    )));
+}
 
-	    if ( $columns > 0 && ++$i % $columns == 0 )
-	        $output .= '<br style="clear:both">';
-	}
-	$output .= "<br style='clear:both'></div>\n";
-	return $output;
-	}
+add_action('customize_register', 'phaziz_theme_customizer');
 
-	add_action( 'widgets_init', 'phaziz_widgets_init' );
-	function phaziz_widgets_init() {
-	    register_sidebar( array(
-	        'name' => __( 'Main Sidebar', 'phaziz' ),
-	        'id' => 'sidebar-1',
-	        'description' => __( 'Widgets in this area will be shown on all posts and pages.', 'phaziz' ),
-	        'before_widget' => '<li id="%1$s" class="widget %2$s">',
-		'after_widget'  => '</li>',
-		'before_title'  => '<h2 class="widgettitle">',
-		'after_title'   => '</h2>',
-	    ) );
-	}
+function phaziz_sanitize_hex_color($color)
+{
+    if ('' === $color) 
+        return '';
+
+    if (preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color)) 
+        return $color;
+}
+
+function phaziz_customize_register($wp_customize)
+{
+    $colors = [];
+
+    $colors[] = array(
+        'slug' => 'background',
+        'default' => '#fff',
+        'label' => __('Background Color', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'link',
+        'default' => '#0000ff',
+        'label' => __('Link Color', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'linkhover',
+        'default' => '#ff0066',
+        'label' => __('Link Hover Color', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'navbar',
+        'default' => '#000',
+        'label' => __('Navbars BackgroundColor', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'navbarColor',
+        'default' => '#fff',
+        'label' => __('Navbars TextColor', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'navbarBottom',
+        'default' => '#000',
+        'label' => __('Bottom Navbars BackgroundColor', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'navbarBottomColor',
+        'default' => '#fff',
+        'label' => __('Bottom Navbars TextColor', 'phaziz')
+    );
+    
+    $colors[] = array(
+        'slug' => 'footerBackgroundColor',
+        'default' => '#fff',
+        'label' => __('Footer BackgroundColor', 'phaziz')
+    );
+
+    foreach ($colors as $color)
+    {
+        $wp_customize->add_setting($color['slug'], array(
+            'default' => $color['default'],
+            'type' => 'option',
+            'capability' => 'edit_theme_options',
+            'sanitize_callback' => 'phaziz_sanitize_hex_color'
+        ));
+
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $color['slug'], array(
+            'label' => $color['label'],
+            'section' => 'colors',
+            'settings' => $color['slug']
+        )));
+    }
+}
+
+add_action('customize_register', 'phaziz_customize_register');
+
+if (function_exists('register_sidebar'))
+{
+    register_sidebar(array(
+        'name' => 'Footer1',
+        'id' => 'footer1',
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget' => '</div>',
+        'before_title' => '<h6 >',
+        'after_title' => '</h6>',
+    ));
+    register_sidebar(array(
+        'name' => 'Footer2',
+        'id' => 'footer2',
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget' => '</div>',
+        'before_title' => '<h6 >',
+        'after_title' => '</h6>',
+    ));
+    register_sidebar(array(
+        'name' => 'Footer3',
+        'id' => 'footer3',
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget' => '</div>',
+        'before_title' => '<h6 >',
+        'after_title' => '</h6>',
+    ));
+    register_sidebar(array(
+        'name' => 'Footer4',
+        'id' => 'footer4',
+        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'after_widget' => '</div>',
+        'before_title' => '<h6 >',
+        'after_title' => '</h6>',
+    ));
+}
+
+function regNav()
+{
+    register_nav_menus(array(
+        'top' => __('Top', 'phaziz') ,
+        'bottom' => __('Footer', 'phaziz')
+    ));
+}
+
+add_action('init', 'regNav');
+
+class CSS_Menu_Maker_Walker extends Walker
+{
+    var $db_fields = array(
+        'parent' => 'menu_item_parent',
+        'id' => 'db_id'
+    );
+
+    function start_lvl(&$output, $depth = 0, $args = array())
+    {
+        $indent = str_repeat("\t", $depth);
+        $output .= "\n$indent<ul>\n";
+    }
+
+    function end_lvl(&$output, $depth = 0, $args = array())
+    {
+        $indent = str_repeat("\t", $depth);
+        $output .= "$indent</ul>\n";
+    }
+
+    function start_el(&$output, $item, $depth = 0, $args = array() , $id = 0)
+    {
+        global $wp_query;
+
+        $indent = ($depth) ? str_repeat("\t", $depth) : '';
+        $class_names = $value = '';
+        $classes = empty($item->classes) ? array() : (array)$item->classes;
+
+        if (in_array('current-menu-item', $classes))
+        {
+            $classes[] = 'active';
+            unset($classes['current-menu-item']);
+        }
+
+        $children = get_posts(array(
+            'post_type' => 'nav_menu_item',
+            'nopaging' => true,
+            'numberposts' => 1,
+            'meta_key' => '_menu_item_menu_item_parent',
+            'meta_value' => $item->ID
+        ));
+
+        if (!empty($children))
+        {
+            $classes[] = 'has-sub';
+        }
+
+        $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes) , $item, $args));
+        $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
+
+        $id = apply_filters('nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args);
+        $id = $id ? ' id="' . esc_attr($id) . '"' : '';
+
+        $output .= $indent . '<li' . $id . $value . $class_names . '>';
+
+        $attributes = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+        $attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
+
+        $item_output = $args->before;
+        $item_output .= '<a' . $attributes . '><span>';
+        $item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
+        $item_output .= '</span></a>';
+        $item_output .= $args->after;
+
+        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+    }
+
+    function end_el(&$output, $item, $depth = 0, $args = array())
+    {
+        $output .= "</li>\n";
+    }
+}
+
+add_action('after_setup_theme', 'phaziz_language_setup');
+
+function phaziz_language_setup()
+{
+    load_theme_textdomain('phaziz', get_template_directory() . '/languages');
+}
+
+add_filter('post_gallery', 'my_post_gallery', 10, 2);
+
+function my_post_gallery($output, $attr)
+{
+    global $post, $wp_locale;
+    static $instance = 0;
+    
+    $instance++;
+
+    if (isset($attr['orderby']))
+    {
+        $attr['orderby'] = sanitize_sql_orderby($attr['orderby']);
+
+        if (!$attr['orderby']) 
+            unset($attr['orderby']);
+    }
+
+    extract(shortcode_atts(array(
+        'order' => 'ASC',
+        'orderby' => 'menu_order ID',
+        'id' => $post->ID,
+        'itemtag' => '',
+        'icontag' => '',
+        'captiontag' => 'dd',
+        'columns' => 3,
+        'size' => 'medium',
+        'include' => '',
+        'exclude' => ''
+    ) , $attr));
+
+    $id = intval($id);
+
+    if ('RAND' == $order) 
+        $orderby = 'none';
+
+    if (!empty($include))
+    {
+        $include = preg_replace('/[^0-9,]+/', '', $include);
+        $_attachments = get_posts(array(
+            'include' => $include,
+            'post_status' => 'inherit',
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'order' => $order,
+            'orderby' => $orderby
+        ));
+
+        $attachments = array();
+        
+        foreach ($_attachments as $key => $val)
+        {
+            $attachments[$val->ID] = $_attachments[$key];
+        }
+    }
+    elseif (!empty($exclude))
+    {
+        $exclude = preg_replace('/[^0-9,]+/', '', $exclude);
+        $attachments = get_children(array(
+            'post_parent' => $id,
+            'exclude' => $exclude,
+            'post_status' => 'inherit',
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'order' => $order,
+            'orderby' => $orderby
+        ));
+    }
+    else
+    {
+        $attachments = get_children(array(
+            'post_parent' => $id,
+            'post_status' => 'inherit',
+            'post_type' => 'attachment',
+            'post_mime_type' => 'image',
+            'order' => $order,
+            'orderby' => $orderby
+        ));
+    }
+
+    if (empty($attachments)) return '';
+
+    if (is_feed())
+    {
+        $output = "\n";
+        foreach ($attachments as $att_id => $attachment) $output .= wp_get_attachment_link($att_id, $size, true) . "\n";
+        return $output;
+    }
+
+    $itemtag = tag_escape($itemtag);
+    $captiontag = tag_escape($captiontag);
+    $columns = intval($columns);
+    $itemwidth = $columns > 0 ? floor(100 / $columns) : 100;
+    $float = is_rtl() ? 'right' : 'left';
+    $selector = "gallery-{$instance}";
+    $output = apply_filters('gallery_style', "<div id='$selector' class='gallery galleryid-{$id}'>");
+    $output = "<div class=\"phaziz_gallery\">\n";
+    $i = 0;
+
+    foreach ($attachments as $id => $attachment)
+    {
+        $link = isset($attr['link']) && 'file' == $attr['link'] ? wp_get_attachment_link($id, $size . ' lazyload', false, false) : wp_get_attachment_link($id, $size . ' lazyload', true, false);
+        $output .= "$link";
+
+        if ($captiontag && trim($attachment->post_excerpt))
+        {
+            $output .= "<{$captiontag} class='gallery-caption'>" . wptexturize($attachment->post_excerpt) . "</{$captiontag}>";
+        }
+
+        if ($columns > 0 && ++$i % $columns == 0) $output .= '<br style="clear:both">';
+    }
+
+    $output .= "<br style='clear:both'></div>\n";
+    
+    return $output;
+}
+
+add_action('widgets_init', 'phaziz_widgets_init');
+
+function phaziz_widgets_init()
+{
+    register_sidebar(array(
+        'name' => __('Main Sidebar', 'phaziz') ,
+        'id' => 'sidebar-1',
+        'description' => __('Widgets in this area will be shown on all posts and pages.', 'phaziz') ,
+        'before_widget' => '<li id="%1$s" class="widget %2$s">',
+        'after_widget' => '</li>',
+        'before_title' => '<h2 class="widgettitle">',
+        'after_title' => '</h2>',
+    ));
+}
+
